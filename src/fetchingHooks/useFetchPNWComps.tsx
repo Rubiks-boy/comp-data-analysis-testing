@@ -1,29 +1,23 @@
 import { useQueryComps } from "./useQueryComps";
-import { FetchResponse } from "../types";
+import { has333, isPNWComp } from "../utils/competitionFilters";
 
-const DAYS_180 = 180 * 24 * 60 * 60 * 1000;
+const ONE_DAY = 24 * 60 * 60 * 1000;
+const DAYS = ONE_DAY * 365 * 4;
 
 export const useFetchPNWComps = () => {
-  const usComps =
-    useQueryComps(
-      "US",
-      new Date(Date.now() - DAYS_180),
-      new Date(Date.now())
-    ) ?? [];
+  const usComps = useQueryComps(
+    "US",
+    new Date(Date.now() - DAYS),
+    new Date(Date.now())
+  );
 
-  const caComps =
-    useQueryComps(
-      "CA",
-      new Date(Date.now() - DAYS_180),
-      new Date(Date.now())
-    ) ?? [];
+  const caComps = useQueryComps(
+    "CA",
+    new Date(Date.now() - DAYS),
+    new Date(Date.now())
+  );
 
-  const isOROrWA = (competition: FetchResponse) =>
-    competition.city.includes("Washington") ||
-    competition.city.includes("Oregon");
+  const candidateComps = [...usComps, ...caComps];
 
-  const isBC = (competition: FetchResponse) =>
-    competition.city.includes("British Columbia");
-
-  return [...usComps.filter(isOROrWA), ...caComps.filter(isBC)];
+  return candidateComps.filter(has333).filter(isPNWComp);
 };

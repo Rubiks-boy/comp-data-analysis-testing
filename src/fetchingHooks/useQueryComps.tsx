@@ -13,7 +13,7 @@ export const useQueryComps = (
   const start = startDate.toISOString().split("T")[0];
   const end = endDate.toISOString().split("T")[0];
 
-  const [comps, setComps] = useState<null | Array<FetchResponse>>(null);
+  const [comps, setComps] = useState<Array<FetchResponse>>([]);
 
   useEffect(() => {
     const fetchPage = (page: number) => {
@@ -21,18 +21,18 @@ export const useQueryComps = (
       return cachedFetch(fetchCache, path);
     };
 
-    const fetchAllPages = async (page = 1): Promise<Array<FetchResponse>> => {
+    const fetchAllPages = async (page = 1) => {
       const comps = await fetchPage(page);
 
-      return comps.length ? [...comps, ...(await fetchAllPages(page + 1))] : [];
+      setComps((existingComps) => [...existingComps, ...comps]);
+
+      if (comps.length) {
+        fetchAllPages(page + 1);
+      }
     };
 
-    const performFetch = async () => {
-      const compsResponse = await fetchAllPages();
-      setComps(compsResponse);
-    };
-
-    performFetch();
+    setComps([]);
+    fetchAllPages();
   }, [countryIso2, start, end, fetchCache]);
 
   return comps;
