@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
-import { wcaApiFetch } from "./utils/wcaApi";
+import { wcaApiFetch } from "../utils/wcaApi";
 import { FetchContext } from "./FetchContextProvider";
-import type { FetchResponse } from "./types";
+import type { FetchResponse } from "../types";
 
 export const useCachedFetch = (path: string): null | FetchResponse => {
   const [response, setResponse] = useState(null);

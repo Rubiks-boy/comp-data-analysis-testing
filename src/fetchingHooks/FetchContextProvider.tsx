@@ -1,5 +1,5 @@
 import React, { ReactNode, useRef } from "react";
-import type { FetchCache } from "./types";
+import type { FetchCache } from "../types";
 
 export const FetchContext = React.createContext<FetchCache>({});
 
