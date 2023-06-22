@@ -15,7 +15,7 @@ const getEarlistDate = (span: Span) => {
     return new Date(Date.now() - ONE_YEAR);
   }
 
-  return new Date("2017-01-01");
+  return new Date("2017-07-01");
 };
 
 export const useFetchPNWComps = () => {
