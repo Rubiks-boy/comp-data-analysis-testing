@@ -17,6 +17,8 @@ export const BucketPicker = () => {
       <ToggleButton value="daily">Daily</ToggleButton>
       <ToggleButton value="weekly">Weekly</ToggleButton>
       <ToggleButton value="monthly">Monthly</ToggleButton>
+      <ToggleButton value="quarterly">Quarterly</ToggleButton>
+      <ToggleButton value="halves">Halves</ToggleButton>
     </ToggleButtonGroup>
   );
 };

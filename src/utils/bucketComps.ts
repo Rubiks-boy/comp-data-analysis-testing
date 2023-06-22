@@ -28,6 +28,14 @@ const getNextWednesday = (date: Date) => {
   );
 };
 
+export const getCompHalf = (date: Date) => {
+  return new Date(date.getFullYear(), Math.floor(date.getMonth() / 6) * 6, 1);
+};
+
+export const getCompQuarter = (date: Date) => {
+  return new Date(date.getFullYear(), Math.floor(date.getMonth() / 3) * 3, 1);
+};
+
 export const getCompMonth = (date: Date) => {
   return new Date(date.getFullYear(), date.getMonth(), 1);
 };
@@ -73,7 +81,11 @@ export const createBucketedComps = (
 ): BucketedComps => {
   let bucketFunction: BucketFunction;
 
-  if (bucket === "monthly") {
+  if (bucket === "halves") {
+    bucketFunction = (date) => getCompHalf(date).toLocaleDateString();
+  } else if (bucket === "quarterly") {
+    bucketFunction = (date) => getCompQuarter(date).toLocaleDateString();
+  } else if (bucket === "monthly") {
     bucketFunction = (date) => getCompMonth(date).toLocaleDateString();
   } else if (bucket === "weekly") {
     bucketFunction = (date) => getPreviousWednesday(date).toLocaleDateString();
