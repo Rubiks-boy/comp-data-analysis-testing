@@ -14,7 +14,7 @@ export const BucketPicker = () => {
       exclusive
       onChange={(_, value) => setTime(value)}
     >
-      <ToggleButton value="none">Weekly</ToggleButton>
+      <ToggleButton value="none">None</ToggleButton>
       <ToggleButton value="weekly">Weekly</ToggleButton>
       <ToggleButton value="monthly">Monthly</ToggleButton>
     </ToggleButtonGroup>
