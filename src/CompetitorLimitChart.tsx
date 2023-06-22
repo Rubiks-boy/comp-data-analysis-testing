@@ -8,9 +8,32 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-
 import { useFetchPNWComps } from "./fetchingHooks/useFetchPNWComps";
 import { isBC, isOR, isWA } from "./utils/competitionFilters";
+import { useRegions } from "./pickers/hooks";
+
+const SERIES = {
+  wa: {
+    label: "Washington",
+    compFilter: isWA,
+    color: "rgb(77,166,255)",
+  },
+  or: {
+    label: "Oregon",
+    compFilter: isOR,
+    color: "rgba(255, 99, 132, 1)",
+  },
+  bc: {
+    label: "British Columbia",
+    compFilter: isBC,
+    color: "rgb(21,128,0)",
+  },
+  all: {
+    label: "All PNW competitions",
+    compFilter: () => true,
+    color: "rgb(40, 40, 40)",
+  },
+};
 
 type Competition = any;
 
@@ -42,24 +65,9 @@ const CustomTooltip = ({ active, payload }: any) => {
 
 export const CompetitorLimitChart = () => {
   const pnwComps = useFetchPNWComps();
+  const regions = useRegions();
 
-  const series = [
-    {
-      label: "Washington",
-      compFilter: isWA,
-      color: "rgb(77,166,255)",
-    },
-    {
-      label: "Oregon",
-      compFilter: isOR,
-      color: "rgba(255, 99, 132, 1)",
-    },
-    {
-      label: "British Columbia",
-      compFilter: isBC,
-      color: "rgb(21,128,0)",
-    },
-  ];
+  const series = regions.map((region) => SERIES[region]);
 
   const datasets = series.map(({ label, compFilter, color }) => ({
     label,
