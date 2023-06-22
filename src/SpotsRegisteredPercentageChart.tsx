@@ -18,7 +18,6 @@ import { useFetchWcifs } from "./fetchingHooks/useFetchWcifs";
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
-    console.log("payload", payload);
     const rawData = payload[0].payload;
     return (
       <div className="custom-tooltip">
@@ -108,8 +107,6 @@ export const SpotsRegisteredPercentageChart = () => {
     data: transformDataForASeries(compFilter, bucketedComps, wcifs),
     color,
   }));
-
-  console.log(datasets[1]);
 
   return (
     <ResponsiveContainer>
