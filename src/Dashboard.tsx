@@ -4,6 +4,7 @@ import { Header } from "./Header";
 import { BucketPicker } from "./pickers/BucketPicker";
 import { RegionPicker } from "./pickers/RegionPicker";
 import { SpanPicker } from "./pickers/SpanPicker";
+import { NumberOfCompsChart } from "./NumberOfCompsChart";
 
 export const Dashboard = () => {
   return (
@@ -46,6 +47,16 @@ export const Dashboard = () => {
                   }}
                 >
                   <CompetitorLimitChart />
+                </Paper>
+              </Grid>
+              <Grid item xs={12} lg={6}>
+                <Paper
+                  sx={{
+                    p: 2,
+                    height: 400,
+                  }}
+                >
+                  <NumberOfCompsChart />
                 </Paper>
               </Grid>
             </Grid>
