@@ -22,14 +22,17 @@ export const useFetchPNWComps = () => {
   const span = useSpan();
   const earliestDate = getEarlistDate(span);
 
-  const usComps = useQueryComps("US", earliestDate, new Date(Date.now()));
+  const usFetch = useQueryComps("US", earliestDate, new Date(Date.now()));
 
-  const caComps = useQueryComps("CA", earliestDate, new Date(Date.now()));
+  const caFetch = useQueryComps("CA", earliestDate, new Date(Date.now()));
 
-  const candidateComps = [...usComps, ...caComps].sort(
+  const candidateComps = [...usFetch.comps, ...caFetch.comps].sort(
     (a, b) =>
       new Date(a.start_date).getTime() - new Date(b.start_date).getTime()
   );
 
-  return candidateComps.filter(has333).filter(isPNWComp);
+  return {
+    isFetching: usFetch.isFetching || caFetch.isFetching,
+    comps: candidateComps.filter(has333).filter(isPNWComp),
+  };
 };

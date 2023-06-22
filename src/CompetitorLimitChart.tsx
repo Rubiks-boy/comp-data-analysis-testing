@@ -51,7 +51,7 @@ const transformDataForASeries = (
 };
 
 export const CompetitorLimitChart = () => {
-  const pnwComps = useFetchPNWComps();
+  const { comps: pnwComps } = useFetchPNWComps();
   const regions = useRegions();
   const bucket = useBucket();
 

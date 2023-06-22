@@ -49,7 +49,7 @@ const addCountsByRegion = (
 };
 
 export const NumberOfCompsChart = () => {
-  const pnwComps = useFetchPNWComps();
+  const { comps: pnwComps } = useFetchPNWComps();
   const regions = useRegions();
   const bucket = useBucket();
 

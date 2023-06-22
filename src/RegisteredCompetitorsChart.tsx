@@ -15,7 +15,6 @@ import { SERIES } from "./constants";
 import { dateFormatter } from "./utils";
 import type { BucketedComps, CompetitionFilter, DataSeries } from "./types";
 import { useFetchWcifs } from "./fetchingHooks/useFetchWcifs";
-import { useMemo } from "react";
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
@@ -65,7 +64,8 @@ const transformDataForASeries = (
 };
 
 export const RegisteredCompetitorsChart = () => {
-  const pnwComps = useFetchPNWComps();
+  const { isFetching: isFetchingPNWComps, comps: pnwComps } =
+    useFetchPNWComps();
   const regions = useRegions();
   const bucket = useBucket();
 
@@ -75,22 +75,15 @@ export const RegisteredCompetitorsChart = () => {
     .flatMap(({ compFilter }) => pnwComps.filter(compFilter))
     .map(({ id }) => id);
 
-  const wcifs = useFetchWcifs(compIds);
+  const { wcifs } = useFetchWcifs(compIds, !isFetchingPNWComps);
 
-  const bucketedComps = useMemo(
-    () => createBucketedComps(bucket, pnwComps),
-    [bucket, pnwComps]
-  );
+  const bucketedComps = createBucketedComps(bucket, pnwComps);
 
-  const datasets = useMemo(
-    () =>
-      series.map(({ label, compFilter, color }) => ({
-        label,
-        data: transformDataForASeries(compFilter, bucketedComps, wcifs),
-        color,
-      })),
-    [series, bucketedComps, wcifs]
-  );
+  const datasets = series.map(({ label, compFilter, color }) => ({
+    label,
+    data: transformDataForASeries(compFilter, bucketedComps, wcifs),
+    color,
+  }));
 
   return (
     <ResponsiveContainer>

@@ -14,6 +14,7 @@ export const useQueryComps = (
   const end = endDate.toISOString().split("T")[0];
 
   const [comps, setComps] = useState<Array<FetchResponse>>([]);
+  const [isFetching, setIsFetching] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchPage = (page: number) => {
@@ -28,12 +29,17 @@ export const useQueryComps = (
 
       if (comps.length) {
         fetchAllPages(page + 1);
+      } else {
+        setIsFetching(false);
       }
     };
 
+    setIsFetching(true);
     setComps([]);
-    fetchAllPages();
+    setTimeout(() => {
+      fetchAllPages();
+    });
   }, [countryIso2, start, end, fetchCache]);
 
-  return comps;
+  return { isFetching, comps };
 };

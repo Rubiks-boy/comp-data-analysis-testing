@@ -88,7 +88,8 @@ const transformDataForASeries = (
 };
 
 export const SpotsRegisteredPercentageChart = () => {
-  const pnwComps = useFetchPNWComps();
+  const { isFetching: isFetchingPNWComps, comps: pnwComps } =
+    useFetchPNWComps();
   const regions = useRegions();
   const bucket = useBucket();
 
@@ -98,7 +99,7 @@ export const SpotsRegisteredPercentageChart = () => {
     .flatMap(({ compFilter }) => pnwComps.filter(compFilter))
     .map(({ id }) => id);
 
-  const wcifs = useFetchWcifs(compIds);
+  const { wcifs } = useFetchWcifs(compIds, !isFetchingPNWComps);
 
   const bucketedComps = createBucketedComps(bucket, pnwComps);
 
