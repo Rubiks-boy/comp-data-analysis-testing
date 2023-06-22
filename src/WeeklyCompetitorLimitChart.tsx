@@ -32,7 +32,6 @@ const compToDataPoint = (comp: Competition) => ({
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
-    console.log(payload);
     return (
       <div className="custom-tooltip">
         <p>{dateFormatter(payload[0].value)}</p>
@@ -51,26 +50,14 @@ export const WeeklyCompetitorLimitChart = () => {
 
   const series = [
     {
-      label: "Washington",
-      compFilter: isWA,
+      label: "PNW",
       color: "rgb(77,166,255)",
-    },
-    {
-      label: "Oregon",
-      compFilter: isOR,
-      color: "rgba(255, 99, 132, 1)",
-    },
-    {
-      label: "British Columbia",
-      compFilter: isBC,
-      color: "rgb(21,128,0)",
     },
   ];
 
-  const datasets = series.map(({ label, compFilter, color }) => ({
+  const datasets = series.map(({ label, color }) => ({
     label,
     data: pnwComps
-      .filter(compFilter)
       .map(compToDataPoint)
       .reduce((accumulator, { week, limit }) => {
         const idx = accumulator.findIndex((c: any) => c.week === week);
@@ -89,7 +76,7 @@ export const WeeklyCompetitorLimitChart = () => {
   }));
 
   return (
-    <ResponsiveContainer width="100%" height={400}>
+    <ResponsiveContainer width="100%">
       <ScatterChart>
         <CartesianGrid />
         <XAxis

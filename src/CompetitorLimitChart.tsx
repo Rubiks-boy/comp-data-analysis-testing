@@ -26,7 +26,6 @@ const compToDataPoint = (comp: Competition) => ({
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
-    console.log(payload);
     return (
       <div className="custom-tooltip">
         <p>{payload[2].value}</p>
@@ -69,7 +68,7 @@ export const CompetitorLimitChart = () => {
   }));
 
   return (
-    <ResponsiveContainer width="100%" height={400}>
+    <ResponsiveContainer>
       <ScatterChart>
         <CartesianGrid />
         <XAxis
