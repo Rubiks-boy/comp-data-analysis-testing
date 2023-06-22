@@ -5,8 +5,11 @@ import { BucketPicker } from "./pickers/BucketPicker";
 import { RegionPicker } from "./pickers/RegionPicker";
 import { SpanPicker } from "./pickers/SpanPicker";
 import { NumberOfCompsChart } from "./NumberOfCompsChart";
+import { RegisteredCompetitorsChart } from "./RegisteredCompetitorsChart";
+import { SpotsRegisteredPercentageChart } from "./SpotsRegisteredPercentageChart";
 
 export const Dashboard = () => {
+  console.log("render", new Date().getMilliseconds());
   return (
     <div>
       <Box>
@@ -57,6 +60,26 @@ export const Dashboard = () => {
                   }}
                 >
                   <NumberOfCompsChart />
+                </Paper>
+              </Grid>
+              <Grid item xs={12} lg={6}>
+                <Paper
+                  sx={{
+                    p: 2,
+                    height: 400,
+                  }}
+                >
+                  <RegisteredCompetitorsChart />
+                </Paper>
+              </Grid>
+              <Grid item xs={12} lg={6}>
+                <Paper
+                  sx={{
+                    p: 2,
+                    height: 400,
+                  }}
+                >
+                  <SpotsRegisteredPercentageChart />
                 </Paper>
               </Grid>
             </Grid>
