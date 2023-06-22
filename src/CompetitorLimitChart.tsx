@@ -94,12 +94,6 @@ const createData = (bucket: Bucket, comps: Array<Competition>) => {
       0
     );
 
-    console.log({
-      compNames,
-      x: new Date(dateKey).getTime(),
-      y: totalCompetitors,
-    });
-
     return {
       compNames,
       x: new Date(dateKey).getTime(),
