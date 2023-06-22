@@ -1,12 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { FetchContext } from "./FetchContextProvider";
-import type { FetchResponse } from "../types";
 import { cachedFetch } from "./useCachedFetch";
 
 export const useFetchWcifs = (competitionIds: Array<string>) => {
   const fetchCache = useContext(FetchContext);
 
-  const [wcifs, setWcifs] = useState<Array<FetchResponse>>([]);
+  const [wcifs, setWcifs] = useState<{ [compId: string]: any }>([]);
+
+  const compIdString = JSON.stringify(competitionIds);
 
   useEffect(() => {
     const fetchWcif = (competitionId: string) => {
@@ -25,9 +26,9 @@ export const useFetchWcifs = (competitionIds: Array<string>) => {
       }
     };
 
-    setWcifs([]);
+    setWcifs({});
     fetchAllWcifs(competitionIds.length - 1);
-  }, [JSON.stringify(competitionIds), fetchCache]);
+  }, [compIdString, fetchCache]);
 
   return wcifs;
 };
