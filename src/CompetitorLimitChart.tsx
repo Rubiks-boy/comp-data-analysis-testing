@@ -10,7 +10,9 @@ import {
 } from "recharts";
 import { useFetchPNWComps } from "./fetchingHooks/useFetchPNWComps";
 import { isBC, isOR, isWA } from "./utils/competitionFilters";
-import { useRegions } from "./pickers/hooks";
+import { useBucket, useRegions } from "./pickers/hooks";
+import type { Bucket } from "./types";
+import { getCompMonth, getPreviousWednesday } from "./utils/bucketComps";
 
 const SERIES = {
   wa: {
@@ -63,15 +65,65 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null;
 };
 
+type BucketedComps = { [compMonth: string]: Array<Competition> };
+type BucketFunction = (date: Date) => string;
+const bucketComps = (
+  comps: Array<Competition>,
+  bucketFunction: BucketFunction
+) => {
+  return comps.reduce((bucketedComps: BucketedComps, comp: Competition) => {
+    const compBucket = bucketFunction(new Date(comp.start_date));
+    return {
+      ...bucketedComps,
+      [compBucket]: [...(bucketedComps[compBucket] ?? []), comp],
+    };
+  }, {} as BucketedComps);
+};
+
+const createData = (bucket: Bucket, comps: Array<Competition>) => {
+  let bucketFunction: BucketFunction;
+
+  if (bucket === "monthly") {
+    bucketFunction = (date) => getCompMonth(date).toLocaleDateString();
+  } else if (bucket === "weekly") {
+    bucketFunction = (date) => getPreviousWednesday(date).toLocaleDateString();
+  } else {
+    bucketFunction = (date) => date.toLocaleDateString();
+  }
+
+  const bucketedComps = bucketComps(comps, bucketFunction);
+
+  return Object.entries(bucketedComps).map(([dateKey, comps]) => {
+    const compNames = comps.map((c) => c.name);
+    const totalCompetitors = comps.reduce(
+      (sum, comp) => (sum += comp.competitor_limit),
+      0
+    );
+
+    console.log({
+      compNames,
+      x: new Date(dateKey).getTime(),
+      y: totalCompetitors,
+    });
+
+    return {
+      compNames,
+      x: new Date(dateKey).getTime(),
+      y: totalCompetitors,
+    };
+  });
+};
+
 export const CompetitorLimitChart = () => {
   const pnwComps = useFetchPNWComps();
   const regions = useRegions();
+  const bucket = useBucket();
 
   const series = regions.map((region) => SERIES[region]);
 
   const datasets = series.map(({ label, compFilter, color }) => ({
     label,
-    data: pnwComps.filter(compFilter).map(compToDataPoint),
+    data: createData(bucket, pnwComps.filter(compFilter)),
     color,
   }));
 
@@ -87,7 +139,7 @@ export const CompetitorLimitChart = () => {
           domain={["dataMin", "dataMax"]}
         />
         <YAxis type="number" dataKey="y" name="Competitor Limit" />
-        <ZAxis type="category" dataKey="comp" name="Competition" />
+        <ZAxis type="category" dataKey="compNames" name="Competition" />
         <Tooltip content={CustomTooltip} />
         {datasets.map(({ label, data, color }) => (
           <Scatter name={label} data={data} fill={color} line />

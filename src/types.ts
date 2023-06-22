@@ -6,7 +6,7 @@ export type FetchCache = { [path: string]: Promise<FetchResponse> };
 
 export type Span = "6m" | "1y" | "all";
 
-export type Bucket = "none" | "monthly" | "weekly";
+export type Bucket = "daily" | "monthly" | "weekly";
 
 export type Region = "wa" | "or" | "bc" | "all";
 

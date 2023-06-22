@@ -9,7 +9,7 @@ const createWeeklyDates = (start: Date, end: Date) => {
   return dates;
 };
 
-const getPreviousWednesday = (date: Date) => {
+export const getPreviousWednesday = (date: Date) => {
   const day = date.getUTCDay();
   return new Date(date.getTime() - (day >= 3 ? day - 3 : day + 4) * ONE_DAY);
 };
@@ -19,6 +19,10 @@ const getNextWednesday = (date: Date) => {
   return new Date(
     date.getTime() + (day >= 4 ? 6 - day + 4 : 3 - day) * ONE_DAY
   );
+};
+
+export const getCompMonth = (date: Date) => {
+  return new Date(date.getFullYear(), date.getMonth(), 1);
 };
 
 export const bucketCompsWeekly = (competitions: Array<Competition>) => {

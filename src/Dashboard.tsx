@@ -49,16 +49,6 @@ export const Dashboard = () => {
                   <CompetitorLimitChart />
                 </Paper>
               </Grid>
-              <Grid item xs={12} lg={6}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    height: 400,
-                  }}
-                >
-                  <WeeklyCompetitorLimitChart />
-                </Paper>
-              </Grid>
             </Grid>
           </Container>
         </Box>
