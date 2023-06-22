@@ -1,5 +1,4 @@
 import { CompetitorLimitChart } from "./CompetitorLimitChart";
-import { WeeklyCompetitorLimitChart } from "./WeeklyCompetitorLimitChart";
 import { Box, Container, Grid, Paper, Toolbar } from "@mui/material";
 import { Header } from "./Header";
 import { BucketPicker } from "./pickers/BucketPicker";

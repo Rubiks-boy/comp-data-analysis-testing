@@ -43,12 +43,6 @@ const dateFormatter = (d: number) => {
   return new Date(d).toLocaleDateString();
 };
 
-const compToDataPoint = (comp: Competition) => ({
-  comp: comp.name,
-  x: new Date(comp.start_date).getTime(),
-  y: comp.competitor_limit,
-});
-
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     return (
