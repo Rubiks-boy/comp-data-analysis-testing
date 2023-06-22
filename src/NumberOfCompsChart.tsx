@@ -5,6 +5,7 @@ import {
   ResponsiveContainer,
   BarChart,
   Bar,
+  Tooltip,
 } from "recharts";
 import { useFetchPNWComps } from "./fetchingHooks/useFetchPNWComps";
 import { useBucket, useRegions } from "./pickers/hooks";
@@ -12,6 +13,22 @@ import type { DataSeries, BucketedComps } from "./types";
 import { createBucketedComps } from "./utils/bucketComps";
 import { SERIES } from "./constants";
 import { dateFormatter } from "./utils";
+
+const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="custom-tooltip">
+        {payload.map(({ dataKey, value }: any) => (
+          <p>
+            {SERIES[dataKey].label}: {value}
+          </p>
+        ))}
+      </div>
+    );
+  }
+
+  return null;
+};
 
 const addCountsByRegion = (
   series: Array<DataSeries>,
@@ -54,6 +71,7 @@ export const NumberOfCompsChart = () => {
           domain={["dataMin", "dataMax"]}
         />
         <YAxis />
+        <Tooltip content={CustomTooltip} />
         {series.map(({ id, color }) => (
           <Bar key={id} dataKey={id} fill={color} stackId="a" />
         ))}
