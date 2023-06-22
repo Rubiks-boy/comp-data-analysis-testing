@@ -23,6 +23,6 @@ export const useSetPickerData = (): ((
   const { setPickerData } = useContext(PickerContext);
 
   return (newPickerData: Partial<PickerData>) => {
-    setPickerData((prev) => ({ ...prev, newPickerData }));
+    setPickerData((prev) => ({ ...prev, ...newPickerData }));
   };
 };
