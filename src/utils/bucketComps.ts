@@ -1,4 +1,11 @@
-type Competition = any;
+import type {
+  Bucket,
+  BucketFunction,
+  BucketedComps,
+  BucketedCompsObj,
+  Competition,
+} from "../types";
+
 const ONE_DAY = 24 * 60 * 60 * 1000;
 
 const createWeeklyDates = (start: Date, end: Date) => {
@@ -45,4 +52,41 @@ export const bucketCompsWeekly = (competitions: Array<Competition>) => {
   const dateBuckets = createWeeklyDates(wednesdayBefore, wednesdayAfter);
 
   return dateBuckets.map((d) => d.toLocaleDateString());
+};
+
+const bucketComps = (
+  comps: Array<Competition>,
+  bucketFunction: BucketFunction
+) => {
+  return comps.reduce((bucketedComps: BucketedCompsObj, comp: Competition) => {
+    const compBucket = bucketFunction(new Date(comp.start_date));
+    return {
+      ...bucketedComps,
+      [compBucket]: [...(bucketedComps[compBucket] ?? []), comp],
+    };
+  }, {} as BucketedCompsObj);
+};
+
+export const createBucketedComps = (
+  bucket: Bucket,
+  comps: Array<Competition>
+): BucketedComps => {
+  let bucketFunction: BucketFunction;
+
+  if (bucket === "monthly") {
+    bucketFunction = (date) => getCompMonth(date).toLocaleDateString();
+  } else if (bucket === "weekly") {
+    bucketFunction = (date) => getPreviousWednesday(date).toLocaleDateString();
+  } else {
+    bucketFunction = (date) => date.toLocaleDateString();
+  }
+
+  const bucketedComps = bucketComps(comps, bucketFunction);
+
+  return Object.entries(bucketedComps).map(([dateKey, comps]) => {
+    return {
+      date: new Date(dateKey).getTime(),
+      comps: comps,
+    };
+  });
 };

@@ -15,3 +15,17 @@ export type PickerData = {
   bucket: Bucket;
   regions: Array<Region>;
 };
+
+export type CompetitionFilter = (competition: Competition) => boolean;
+export type DataSeries = {
+  id: string;
+  label: string;
+  compFilter: CompetitionFilter;
+  color: string;
+};
+
+export type Competition = any;
+
+export type BucketFunction = (date: Date) => string;
+export type BucketedCompsObj = { [compDate: string]: Array<Competition> };
+export type BucketedComps = Array<{ date: number; comps: Array<Competition> }>;
