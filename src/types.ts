@@ -3,3 +3,15 @@
 export type FetchResponse = any;
 
 export type FetchCache = { [path: string]: Promise<FetchResponse> };
+
+export type Span = "6m" | "1y" | "all";
+
+export type Bucket = "none" | "monthly" | "weekly";
+
+export type Region = "wa" | "or" | "bc" | "all";
+
+export type PickerData = {
+  span: Span;
+  bucket: Bucket;
+  regions: Array<Region>;
+};

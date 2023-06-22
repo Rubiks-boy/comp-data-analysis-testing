@@ -1,11 +1,14 @@
 import "./App.css";
 import { Dashboard } from "./Dashboard";
 import { FetchContextProvider } from "./fetchingHooks/FetchContextProvider";
+import { PickerContextProvider } from "./pickers/PickerContextProvider";
 
 function App() {
   return (
     <FetchContextProvider>
-      <Dashboard />
+      <PickerContextProvider>
+        <Dashboard />
+      </PickerContextProvider>
     </FetchContextProvider>
   );
 }
