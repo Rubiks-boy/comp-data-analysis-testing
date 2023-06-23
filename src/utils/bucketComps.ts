@@ -40,6 +40,22 @@ export const getCompMonth = (date: Date) => {
   return new Date(date.getFullYear(), date.getMonth(), 1);
 };
 
+export const getNextBucket = (date: Date, bucket: Bucket) => {
+  if (bucket === "monthly") {
+    return getCompMonth(new Date(date.getFullYear(), date.getMonth() + 1, 1));
+  }
+  if (bucket === "quarterly") {
+    return getCompQuarter(new Date(date.getFullYear(), date.getMonth() + 3, 1));
+  }
+  if (bucket === "halves") {
+    return getCompHalf(new Date(date.getFullYear(), date.getMonth() + 6, 1));
+  }
+  if (bucket === "weekly") {
+    return getNextWednesday(date);
+  }
+  return date;
+};
+
 export const bucketCompsWeekly = (competitions: Array<Competition>) => {
   const sortedCompetitions = competitions.sort((a, b) =>
     ("" + a.start_date).localeCompare(b.start_date)

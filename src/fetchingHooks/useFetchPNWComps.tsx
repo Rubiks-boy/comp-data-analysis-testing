@@ -1,13 +1,14 @@
 import { useQueryComps } from "./useQueryComps";
 import { has333, isPNWComp } from "../utils/competitionFilters";
-import { useSpan } from "../pickers/hooks";
-import type { Span } from "../types";
+import { useBucket, useSpan } from "../pickers/hooks";
+import type { Competition, Span } from "../types";
+import { getNextBucket } from "../utils/bucketComps";
 
 const ONE_DAY = 24 * 60 * 60 * 1000;
 const SIX_MONTHS = ONE_DAY * 180;
 const ONE_YEAR = ONE_DAY * 365;
 
-const getEarlistDate = (span: Span) => {
+const getEarliestDate = (span: Span) => {
   if (span === "6m") {
     return new Date(Date.now() - SIX_MONTHS);
   }
@@ -20,7 +21,8 @@ const getEarlistDate = (span: Span) => {
 
 export const useFetchPNWComps = () => {
   const span = useSpan();
-  const earliestDate = getEarlistDate(span);
+  const bucket = useBucket();
+  const earliestDate = getEarliestDate(span);
 
   const usFetch = useQueryComps("US", earliestDate, new Date(Date.now()));
 
@@ -31,8 +33,16 @@ export const useFetchPNWComps = () => {
       new Date(a.start_date).getTime() - new Date(b.start_date).getTime()
   );
 
+  const minCompletedPeriodStart = getNextBucket(earliestDate, bucket);
+
+  const isInCompletedPeriod = ({ start_date }: Competition) =>
+    new Date(start_date) > minCompletedPeriodStart;
+
   return {
     isFetching: usFetch.isFetching || caFetch.isFetching,
-    comps: candidateComps.filter(has333).filter(isPNWComp),
+    comps: candidateComps
+      .filter(has333)
+      .filter(isPNWComp)
+      .filter(isInCompletedPeriod),
   };
 };
