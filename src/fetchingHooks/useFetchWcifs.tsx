@@ -45,12 +45,12 @@ export const useFetchWcifs = (
     setIsFetching(true);
     setWcifs({});
 
-    fetchAllWcifs(competitionIds.length - 1).then(
-      (wcifs: Array<FetchResponse>) => {
-        setIsFetching(false);
-        setWcifs(wcifs);
-      }
-    );
+    setTimeout(async () => {
+      const wcifs = await fetchAllWcifs(competitionIds.length - 1);
+
+      setIsFetching(false);
+      setWcifs(wcifs);
+    });
     // This data only changes whenone of the inputs change & when we're ready to fetch (as determined by the competitor IDs updating)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputChanged, readyToFetch]);

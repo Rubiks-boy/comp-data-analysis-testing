@@ -35,7 +35,8 @@ export const useQueryComps = (
     setIsFetching(true);
     setComps([]);
 
-    fetchAllPages().then((comps: Array<FetchResponse>) => {
+    setTimeout(async () => {
+      const comps = await fetchAllPages();
       setIsFetching(false);
       setComps(comps);
     });
