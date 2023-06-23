@@ -3,6 +3,7 @@ import { FetchContext } from "./FetchContextProvider";
 import { cachedFetch } from "./useCachedFetch";
 import { useBucket, useSpan } from "../pickers/hooks";
 import { usePrevious } from "../utils/usePrevious";
+import { FetchResponse } from "../types";
 
 export const useFetchWcifs = (
   competitionIds: Array<string>,
@@ -35,17 +36,23 @@ export const useFetchWcifs = (
       const compId = competitionIds[idx];
       const wcif = await fetchWcif(compId);
 
-      setWcifs((existingWcifs) => ({ ...existingWcifs, [compId]: wcif }));
+      const remainingWcifs: Array<FetchResponse> =
+        idx > 0 ? await fetchAllWcifs(idx - 1) : [];
 
-      if (idx > 0) {
-        fetchAllWcifs(idx - 1);
-      }
+      return { ...remainingWcifs, [compId]: wcif };
     };
 
     setIsFetching(true);
     setWcifs({});
 
-    fetchAllWcifs(competitionIds.length - 1);
+    fetchAllWcifs(competitionIds.length - 1).then(
+      (wcifs: Array<FetchResponse>) => {
+        setIsFetching(false);
+        setWcifs(wcifs);
+      }
+    );
+    // This data only changes whenone of the inputs change & when we're ready to fetch (as determined by the competitor IDs updating)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputChanged, readyToFetch]);
 
   return { isFetching, wcifs };

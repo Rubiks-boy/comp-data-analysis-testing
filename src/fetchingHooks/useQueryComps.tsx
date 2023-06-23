@@ -22,22 +22,22 @@ export const useQueryComps = (
       return cachedFetch(fetchCache, path);
     };
 
-    const fetchAllPages = async (page = 1) => {
+    const fetchAllPages = async (page = 1): Promise<Array<FetchResponse>> => {
       const comps = await fetchPage(page);
 
-      setComps((existingComps) => [...existingComps, ...comps]);
+      const remainingComps: Array<FetchResponse> = comps.length
+        ? await fetchAllPages(page + 1)
+        : [];
 
-      if (comps.length) {
-        fetchAllPages(page + 1);
-      } else {
-        setIsFetching(false);
-      }
+      return [...comps, ...remainingComps];
     };
 
     setIsFetching(true);
     setComps([]);
-    setTimeout(() => {
-      fetchAllPages();
+
+    fetchAllPages().then((comps: Array<FetchResponse>) => {
+      setIsFetching(false);
+      setComps(comps);
     });
   }, [countryIso2, start, end, fetchCache]);
 
