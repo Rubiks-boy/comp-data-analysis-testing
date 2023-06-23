@@ -44,6 +44,10 @@ const CustomTooltip = ({ active, payload }: any) => {
           {data.spotsForEvent}
         </p>
         <p>
+          <span>Number of comps: </span>
+          {data.comps.length}
+        </p>
+        <p>
           <span>Comps: </span>
           {data.comps.map(({ name }: any) => name).join(", ")}
         </p>
