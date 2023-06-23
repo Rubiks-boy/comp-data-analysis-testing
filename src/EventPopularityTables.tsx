@@ -8,7 +8,7 @@ export const EventPopularityTables = () => {
   return (
     <>
       {regions.map((region) => (
-        <ChartBox lg={9} height={null}>
+        <ChartBox lg={12} height={null}>
           <EventPopularityTable region={region} />
         </ChartBox>
       ))}

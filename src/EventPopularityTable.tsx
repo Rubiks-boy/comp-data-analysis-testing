@@ -22,9 +22,10 @@ type ColId =
   | "eventId"
   | "numComps"
   | "percentComps"
+  | "diffVsComps"
   | "percentRegistered"
   | "historicalPNW"
-  | "diff";
+  | "diffVsHistorical";
 
 type HeadCell = {
   disablePadding: boolean;
@@ -41,6 +42,12 @@ const headCells: Array<HeadCell> = [
     label: "Event",
   },
   {
+    id: "percentRegistered",
+    numeric: true,
+    disablePadding: false,
+    label: "Registered (%)",
+  },
+  {
     id: "numComps",
     numeric: true,
     disablePadding: false,
@@ -53,10 +60,10 @@ const headCells: Array<HeadCell> = [
     label: "Comps (%)",
   },
   {
-    id: "percentRegistered",
+    id: "diffVsComps",
     numeric: true,
     disablePadding: false,
-    label: "Registered (%)",
+    label: "Reg – Comps (%)",
   },
   {
     id: "historicalPNW",
@@ -65,10 +72,10 @@ const headCells: Array<HeadCell> = [
     label: "Historical PNW (%)",
   },
   {
-    id: "diff",
+    id: "diffVsHistorical",
     numeric: true,
     disablePadding: false,
-    label: "Diff (%)",
+    label: "Reg – Hist. (%)",
   },
 ];
 
@@ -154,7 +161,8 @@ export const EventPopularityTable = ({ region }: { region: Region }) => {
 
     const historicalPNW = HISTORICAL_PNW_REGISTRATION[eventId] * 100;
 
-    const diff = percentRegistered - historicalPNW;
+    const diffVsHistorical = percentRegistered - historicalPNW;
+    const diffVsComps = percentRegistered - percentComps;
 
     return {
       eventId,
@@ -163,7 +171,8 @@ export const EventPopularityTable = ({ region }: { region: Region }) => {
       numRegistered: numRegisteredForEvent,
       percentRegistered,
       historicalPNW,
-      diff,
+      diffVsHistorical,
+      diffVsComps,
     };
   });
 
@@ -221,17 +230,22 @@ export const EventPopularityTable = ({ region }: { region: Region }) => {
                   <TableCell component="th" scope="row">
                     {row.eventId}
                   </TableCell>
+                  <TableCell align="right">
+                    {row.percentRegistered.toFixed(1)}%
+                  </TableCell>
                   <TableCell align="right">{row.numComps}</TableCell>
                   <TableCell align="right">
                     {row.percentComps.toFixed(1)}%
                   </TableCell>
                   <TableCell align="right">
-                    {row.percentRegistered.toFixed(1)}%
+                    {row.diffVsComps.toFixed(1)}%
                   </TableCell>
                   <TableCell align="right">
                     {row.historicalPNW.toFixed(1)}%
                   </TableCell>
-                  <TableCell align="right">{row.diff.toFixed(1)}%</TableCell>
+                  <TableCell align="right">
+                    {row.diffVsHistorical.toFixed(1)}%
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
