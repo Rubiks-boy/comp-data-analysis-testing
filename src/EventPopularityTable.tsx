@@ -85,9 +85,8 @@ export const EventPopularityTable = () => {
                 <TableCell>Event</TableCell>
                 <TableCell align="right">Comps&nbsp;(#)</TableCell>
                 <TableCell align="right">Registered&nbsp;(%)</TableCell>
-                <TableCell align="right">
-                  Historical Registration&nbsp;(%)
-                </TableCell>
+                <TableCell align="right">Historical PNW&nbsp;(%)</TableCell>
+                <TableCell align="right">Diff&nbsp;(%)</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -107,6 +106,13 @@ export const EventPopularityTable = () => {
                     {(HISTORICAL_PNW_REGISTRATION[row.eventId] * 100).toFixed(
                       1
                     )}
+                    %
+                  </TableCell>
+                  <TableCell align="right">
+                    {(
+                      row.percentRegistered -
+                      HISTORICAL_PNW_REGISTRATION[row.eventId] * 100
+                    ).toFixed(1)}
                     %
                   </TableCell>
                 </TableRow>
