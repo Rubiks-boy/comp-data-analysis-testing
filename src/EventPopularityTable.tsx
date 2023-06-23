@@ -117,7 +117,7 @@ export const EventPopularityTable = ({ region }: { region: Region }) => {
 
     const numComps = compsWithEvent.length;
 
-    const percentComps = numComps / comps.length;
+    const percentComps = (numComps / comps.length) * 100;
 
     const numRegisteredPerComp = compsWithEvent.map((comp) => {
       const wcif = wcifs[comp.id];
