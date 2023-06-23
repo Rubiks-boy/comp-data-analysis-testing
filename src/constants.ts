@@ -47,3 +47,28 @@ export const EVENT_IDS: Array<string> = [
   // "555bf",
   // "333mbf",
 ];
+
+export const HISTORICAL_PNW_REGISTRATION: { [k: string]: number } = {
+  "333": 0.972,
+  "222": 0.817,
+  "444": 0.579,
+  "555": 0.397,
+  "666": 0.264,
+  "777": 0.224,
+  "333bf": 0.235,
+  "333fm": 0.238,
+  "333oh": 0.503,
+  clock: 0.252,
+  pyram: 0.68,
+  minx: 0.341,
+  skewb: 0.519,
+  sq1: 0.359,
+  "444bf": 0.106,
+  "555bf": 0.089,
+  "333mbf": 0.141,
+  // Deprecated events
+  magic: 0,
+  mmagic: 0,
+  "333mbo": 0,
+  "333ft": 0,
+};

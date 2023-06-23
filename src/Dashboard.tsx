@@ -9,6 +9,7 @@ import { NumberOfCompsChart } from "./NumberOfCompsChart";
 import { RegisteredCompetitorsChart } from "./RegisteredCompetitorsChart";
 import { SpotsRegisteredPercentageChart } from "./SpotsRegisteredPercentageChart";
 import { EventCoverageChart } from "./EventCoverageChart";
+import { EventPopularityTable } from "./EventPopularityTable";
 
 const ChartBox = ({
   children,
@@ -19,7 +20,7 @@ const ChartBox = ({
   children: ReactNode;
   xs?: number;
   lg?: number;
-  height?: number;
+  height?: number | null;
 }) => {
   return (
     <Grid item xs={xs} lg={lg}>
@@ -83,6 +84,9 @@ export const Dashboard = () => {
               </ChartBox>
               <ChartBox lg={12} height={900}>
                 <EventCoverageChart />
+              </ChartBox>
+              <ChartBox lg={9} height={null}>
+                <EventPopularityTable />
               </ChartBox>
             </Grid>
           </Container>
