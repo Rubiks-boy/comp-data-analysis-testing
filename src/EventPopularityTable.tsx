@@ -21,6 +21,7 @@ type Order = "asc" | "desc";
 type ColId =
   | "eventId"
   | "numComps"
+  | "percentComps"
   | "percentRegistered"
   | "historicalPNW"
   | "diff";
@@ -44,6 +45,12 @@ const headCells: Array<HeadCell> = [
     numeric: true,
     disablePadding: false,
     label: "Comps (#)",
+  },
+  {
+    id: "percentComps",
+    numeric: true,
+    disablePadding: false,
+    label: "Comps (%)",
   },
   {
     id: "percentRegistered",
@@ -88,8 +95,8 @@ const getComparator = <Key extends keyof any>(
 };
 
 export const EventPopularityTable = ({ region }: { region: Region }) => {
-  const [order, setOrder] = useState<Order>("asc");
-  const [orderBy, setOrderBy] = useState<ColId>("numComps");
+  const [order, setOrder] = useState<Order>("desc");
+  const [orderBy, setOrderBy] = useState<ColId>("percentRegistered");
 
   const { isFetching: isFetchingPNWComps, comps: pnwComps } =
     useFetchPNWComps();
@@ -109,6 +116,8 @@ export const EventPopularityTable = ({ region }: { region: Region }) => {
     );
 
     const numComps = compsWithEvent.length;
+
+    const percentComps = numComps / comps.length;
 
     const numRegisteredPerComp = compsWithEvent.map((comp) => {
       const wcif = wcifs[comp.id];
@@ -150,6 +159,7 @@ export const EventPopularityTable = ({ region }: { region: Region }) => {
     return {
       eventId,
       numComps,
+      percentComps,
       numRegistered: numRegisteredForEvent,
       percentRegistered,
       historicalPNW,
@@ -212,6 +222,9 @@ export const EventPopularityTable = ({ region }: { region: Region }) => {
                     {row.eventId}
                   </TableCell>
                   <TableCell align="right">{row.numComps}</TableCell>
+                  <TableCell align="right">
+                    {row.percentComps.toFixed(1)}%
+                  </TableCell>
                   <TableCell align="right">
                     {row.percentRegistered.toFixed(1)}%
                   </TableCell>
