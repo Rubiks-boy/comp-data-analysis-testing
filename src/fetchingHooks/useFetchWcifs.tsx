@@ -5,6 +5,8 @@ import { useBucket, useSpan } from "../pickers/hooks";
 import { usePrevious } from "../utils/usePrevious";
 import { FetchResponse } from "../types";
 
+const BATCH_SIZE = 5;
+
 export const useFetchWcifs = (
   competitionIds: Array<string>,
   readyToFetch: boolean
@@ -32,21 +34,43 @@ export const useFetchWcifs = (
       return cachedFetch(fetchCache, path);
     };
 
-    const fetchAllWcifs = async (idx: number) => {
-      const compId = competitionIds[idx];
-      const wcif = await fetchWcif(compId);
+    const fetchAllWcifs = async (compIdx: number) => {
+      if (compIdx >= competitionIds.length) {
+        return [];
+      }
 
-      const remainingWcifs: Array<FetchResponse> =
-        idx > 0 ? await fetchAllWcifs(idx - 1) : [];
+      const fetchPromises = [...Array(BATCH_SIZE).keys()].map(async (i) => {
+        const compId = competitionIds[compIdx + i];
+        if (!compId) {
+          return Promise.resolve(null);
+        }
 
-      return { ...remainingWcifs, [compId]: wcif };
+        const wcif = await fetchWcif(compId);
+        return { compId, wcif };
+      });
+
+      const wcifBatch = await Promise.all(fetchPromises);
+
+      const wcifs = wcifBatch.reduce((obj, wcif) => {
+        if (!wcif) {
+          return obj;
+        }
+
+        return Object.assign(obj, { [wcif.compId]: wcif.wcif });
+      }, {});
+
+      const remainingBatches: Array<FetchResponse> = await fetchAllWcifs(
+        compIdx + BATCH_SIZE
+      );
+
+      return { ...wcifs, ...remainingBatches };
     };
 
     setIsFetching(true);
     setWcifs({});
 
     setTimeout(async () => {
-      const wcifs = await fetchAllWcifs(competitionIds.length - 1);
+      const wcifs = await fetchAllWcifs(0);
 
       setIsFetching(false);
       setWcifs(wcifs);
