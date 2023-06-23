@@ -1,10 +1,12 @@
 import {
+  Box,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  TableSortLabel,
 } from "@mui/material";
 import { useFetchPNWComps } from "./fetchingHooks/useFetchPNWComps";
 import { EVENT_IDS, HISTORICAL_PNW_REGISTRATION, SERIES } from "./constants";
@@ -12,8 +14,83 @@ import { WithLoaderOverlay } from "./WithLoaderOverlay";
 import { WithChartTitle } from "./WithChartTitle";
 import { useFetchWcifs } from "./fetchingHooks/useFetchWcifs";
 import type { Region } from "./types";
+import { useMemo, useState } from "react";
+import { visuallyHidden } from "@mui/utils";
+
+type Order = "asc" | "desc";
+type ColId =
+  | "eventId"
+  | "numComps"
+  | "percentRegistered"
+  | "historicalPNW"
+  | "diff";
+
+type HeadCell = {
+  disablePadding: boolean;
+  id: ColId;
+  label: string;
+  numeric: boolean;
+};
+
+const headCells: Array<HeadCell> = [
+  {
+    id: "eventId",
+    numeric: false,
+    disablePadding: true,
+    label: "Event",
+  },
+  {
+    id: "numComps",
+    numeric: true,
+    disablePadding: false,
+    label: "Comps (#)",
+  },
+  {
+    id: "percentRegistered",
+    numeric: true,
+    disablePadding: false,
+    label: "Registered (%)",
+  },
+  {
+    id: "historicalPNW",
+    numeric: true,
+    disablePadding: false,
+    label: "Historical PNW (%)",
+  },
+  {
+    id: "diff",
+    numeric: true,
+    disablePadding: false,
+    label: "Diff (%)",
+  },
+];
+
+const descendingComparator = <T,>(a: T, b: T, orderBy: keyof T) => {
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
+};
+
+const getComparator = <Key extends keyof any>(
+  order: Order,
+  orderBy: Key
+): ((
+  a: { [key in Key]: number | string },
+  b: { [key in Key]: number | string }
+) => number) => {
+  return order === "desc"
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
+};
 
 export const EventPopularityTable = ({ region }: { region: Region }) => {
+  const [order, setOrder] = useState<Order>("asc");
+  const [orderBy, setOrderBy] = useState<ColId>("numComps");
+
   const { isFetching: isFetchingPNWComps, comps: pnwComps } =
     useFetchPNWComps();
 
@@ -25,8 +102,6 @@ export const EventPopularityTable = ({ region }: { region: Region }) => {
     comps.map(({ id }) => id),
     !isFetchingPNWComps
   );
-
-  console.log(wcifs);
 
   const dataByEvent = EVENT_IDS.map((eventId: string) => {
     const compsWithEvent = comps.filter(({ event_ids }) =>
@@ -66,13 +141,32 @@ export const EventPopularityTable = ({ region }: { region: Region }) => {
       0
     );
 
+    const percentRegistered = (numRegisteredForEvent / numRegistrations) * 100;
+
+    const historicalPNW = HISTORICAL_PNW_REGISTRATION[eventId] * 100;
+
+    const diff = percentRegistered - historicalPNW;
+
     return {
       eventId,
       numComps,
       numRegistered: numRegisteredForEvent,
-      percentRegistered: (numRegisteredForEvent / numRegistrations) * 100,
+      percentRegistered,
+      historicalPNW,
+      diff,
     };
   });
+
+  const handleRequestSort = (property: ColId) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+  };
+
+  const rows = useMemo(
+    () => dataByEvent.sort(getComparator(order, orderBy)),
+    [order, orderBy, dataByEvent]
+  );
 
   return (
     <WithLoaderOverlay isLoading={isFetchingWcifs || isFetchingPNWComps}>
@@ -81,15 +175,35 @@ export const EventPopularityTable = ({ region }: { region: Region }) => {
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell>Event</TableCell>
-                <TableCell align="right">Comps&nbsp;(#)</TableCell>
-                <TableCell align="right">Registered&nbsp;(%)</TableCell>
-                <TableCell align="right">Historical PNW&nbsp;(%)</TableCell>
-                <TableCell align="right">Diff&nbsp;(%)</TableCell>
+                {headCells.map((headCell: HeadCell) => (
+                  <TableCell
+                    key={headCell.id}
+                    align={headCell.numeric ? "right" : "left"}
+                    padding={headCell.disablePadding ? "none" : "normal"}
+                    sortDirection={orderBy === headCell.id ? order : false}
+                  >
+                    <TableSortLabel
+                      active={orderBy === headCell.id}
+                      direction={orderBy === headCell.id ? order : "asc"}
+                      onClick={() => {
+                        handleRequestSort(headCell.id);
+                      }}
+                    >
+                      {headCell.label}
+                      {orderBy === headCell.id ? (
+                        <Box component="span" sx={visuallyHidden}>
+                          {order === "desc"
+                            ? "sorted descending"
+                            : "sorted ascending"}
+                        </Box>
+                      ) : null}
+                    </TableSortLabel>
+                  </TableCell>
+                ))}
               </TableRow>
             </TableHead>
             <TableBody>
-              {dataByEvent.map((row) => (
+              {rows.map((row) => (
                 <TableRow
                   key={row.eventId}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -102,18 +216,9 @@ export const EventPopularityTable = ({ region }: { region: Region }) => {
                     {row.percentRegistered.toFixed(1)}%
                   </TableCell>
                   <TableCell align="right">
-                    {(HISTORICAL_PNW_REGISTRATION[row.eventId] * 100).toFixed(
-                      1
-                    )}
-                    %
+                    {row.historicalPNW.toFixed(1)}%
                   </TableCell>
-                  <TableCell align="right">
-                    {(
-                      row.percentRegistered -
-                      HISTORICAL_PNW_REGISTRATION[row.eventId] * 100
-                    ).toFixed(1)}
-                    %
-                  </TableCell>
+                  <TableCell align="right">{row.diff.toFixed(1)}%</TableCell>
                 </TableRow>
               ))}
             </TableBody>
