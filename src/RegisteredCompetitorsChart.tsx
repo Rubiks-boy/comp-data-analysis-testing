@@ -16,6 +16,7 @@ import { dateFormatter } from "./utils";
 import type { BucketedComps, CompetitionFilter, DataSeries } from "./types";
 import { useFetchWcifs } from "./fetchingHooks/useFetchWcifs";
 import { WithLoaderOverlay } from "./WithLoaderOverlay";
+import { WithChartTitle } from "./WithChartTitle";
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
@@ -91,24 +92,30 @@ export const RegisteredCompetitorsChart = () => {
 
   return (
     <WithLoaderOverlay isLoading={isFetchingPNWComps || isFetchingWcifs}>
-      <ResponsiveContainer>
-        <ScatterChart>
-          <CartesianGrid />
-          <XAxis
-            type="number"
-            dataKey="date"
-            name="Date"
-            tickFormatter={dateFormatter}
-            domain={["dataMin", "dataMax"]}
-          />
-          <YAxis type="number" dataKey="numPersons" name="Number registered" />
-          <ZAxis type="category" dataKey="compNames" name="Competition" />
-          <Tooltip content={CustomTooltip} />
-          {datasets.map(({ label, data, color }) => (
-            <Scatter key={label} name={label} data={data} fill={color} line />
-          ))}
-        </ScatterChart>
-      </ResponsiveContainer>
+      <WithChartTitle title="Accepted registrations">
+        <ResponsiveContainer>
+          <ScatterChart>
+            <CartesianGrid />
+            <XAxis
+              type="number"
+              dataKey="date"
+              name="Date"
+              tickFormatter={dateFormatter}
+              domain={["dataMin", "dataMax"]}
+            />
+            <YAxis
+              type="number"
+              dataKey="numPersons"
+              name="Number registered"
+            />
+            <ZAxis type="category" dataKey="compNames" name="Competition" />
+            <Tooltip content={CustomTooltip} />
+            {datasets.map(({ label, data, color }) => (
+              <Scatter key={label} name={label} data={data} fill={color} line />
+            ))}
+          </ScatterChart>
+        </ResponsiveContainer>
+      </WithChartTitle>
     </WithLoaderOverlay>
   );
 };

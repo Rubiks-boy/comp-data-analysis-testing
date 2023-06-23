@@ -14,6 +14,7 @@ import { createBucketedComps } from "./utils/bucketComps";
 import { SERIES } from "./constants";
 import { dateFormatter } from "./utils";
 import { WithLoaderOverlay } from "./WithLoaderOverlay";
+import { WithChartTitle } from "./WithChartTitle";
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
@@ -62,23 +63,25 @@ export const NumberOfCompsChart = () => {
 
   return (
     <WithLoaderOverlay isLoading={isFetching}>
-      <ResponsiveContainer>
-        <BarChart data={data}>
-          <CartesianGrid />
-          <XAxis
-            type="number"
-            dataKey="date"
-            name="Date"
-            tickFormatter={dateFormatter}
-            domain={["dataMin", "dataMax"]}
-          />
-          <YAxis />
-          <Tooltip content={CustomTooltip} />
-          {series.map(({ id, color }) => (
-            <Bar key={id} dataKey={id} fill={color} stackId="a" />
-          ))}
-        </BarChart>
-      </ResponsiveContainer>
+      <WithChartTitle title="Number of competitions">
+        <ResponsiveContainer>
+          <BarChart data={data}>
+            <CartesianGrid />
+            <XAxis
+              type="number"
+              dataKey="date"
+              name="Date"
+              tickFormatter={dateFormatter}
+              domain={["dataMin", "dataMax"]}
+            />
+            <YAxis />
+            <Tooltip content={CustomTooltip} />
+            {series.map(({ id, color }) => (
+              <Bar key={id} dataKey={id} fill={color} stackId="a" />
+            ))}
+          </BarChart>
+        </ResponsiveContainer>
+      </WithChartTitle>
     </WithLoaderOverlay>
   );
 };
