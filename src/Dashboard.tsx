@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import { CompetitorLimitChart } from "./CompetitorLimitChart";
 import { Box, Container, Grid, Paper, Toolbar } from "@mui/material";
 import { Header } from "./Header";
@@ -7,6 +8,21 @@ import { SpanPicker } from "./pickers/SpanPicker";
 import { NumberOfCompsChart } from "./NumberOfCompsChart";
 import { RegisteredCompetitorsChart } from "./RegisteredCompetitorsChart";
 import { SpotsRegisteredPercentageChart } from "./SpotsRegisteredPercentageChart";
+
+const ChartBox = ({ children }: { children: ReactNode }) => {
+  return (
+    <Grid item xs={12} lg={6}>
+      <Paper
+        sx={{
+          p: 2,
+          height: 400,
+        }}
+      >
+        {children}
+      </Paper>
+    </Grid>
+  );
+};
 
 export const Dashboard = () => {
   console.log("render", new Date().getMilliseconds());
@@ -42,46 +58,18 @@ export const Dashboard = () => {
                   <RegionPicker />
                 </Paper>
               </Grid>
-              <Grid item xs={12} lg={6}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    height: 400,
-                  }}
-                >
-                  <CompetitorLimitChart />
-                </Paper>
-              </Grid>
-              <Grid item xs={12} lg={6}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    height: 400,
-                  }}
-                >
-                  <NumberOfCompsChart />
-                </Paper>
-              </Grid>
-              <Grid item xs={12} lg={6}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    height: 400,
-                  }}
-                >
-                  <RegisteredCompetitorsChart />
-                </Paper>
-              </Grid>
-              <Grid item xs={12} lg={6}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    height: 400,
-                  }}
-                >
-                  <SpotsRegisteredPercentageChart />
-                </Paper>
-              </Grid>
+              <ChartBox>
+                <CompetitorLimitChart />
+              </ChartBox>
+              <ChartBox>
+                <NumberOfCompsChart />
+              </ChartBox>
+              <ChartBox>
+                <RegisteredCompetitorsChart />
+              </ChartBox>
+              <ChartBox>
+                <SpotsRegisteredPercentageChart />
+              </ChartBox>
             </Grid>
           </Container>
         </Box>
