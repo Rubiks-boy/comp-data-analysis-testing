@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { FetchContext } from "./FetchContextProvider";
 import { cachedFetch } from "./useCachedFetch";
-import { useBucket, useSpan } from "../pickers/hooks";
+import { useSpan } from "../pickers/hooks";
 import { usePrevious } from "../utils/usePrevious";
 import { FetchResponse } from "../types";
 
@@ -15,10 +15,8 @@ export const useFetchWcifs = (
 
   const span = useSpan();
   const prevSpan = usePrevious(span);
-  const bucket = useBucket();
-  const prevBucket = usePrevious(bucket);
 
-  const inputChanged = span !== prevSpan || bucket !== prevBucket;
+  const inputChanged = span !== prevSpan;
 
   const [wcifs, setWcifs] = useState<{ [compId: string]: any }>({});
 
