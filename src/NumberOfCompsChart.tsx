@@ -13,6 +13,7 @@ import type { DataSeries, BucketedComps } from "./types";
 import { createBucketedComps } from "./utils/bucketComps";
 import { SERIES } from "./constants";
 import { dateFormatter } from "./utils";
+import { WithLoaderOverlay } from "./WithLoaderOverlay";
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
@@ -49,7 +50,7 @@ const addCountsByRegion = (
 };
 
 export const NumberOfCompsChart = () => {
-  const { comps: pnwComps } = useFetchPNWComps();
+  const { isFetching, comps: pnwComps } = useFetchPNWComps();
   const regions = useRegions();
   const bucket = useBucket();
 
@@ -60,22 +61,24 @@ export const NumberOfCompsChart = () => {
   const data = addCountsByRegion(series, bucketedComps);
 
   return (
-    <ResponsiveContainer>
-      <BarChart data={data}>
-        <CartesianGrid />
-        <XAxis
-          type="number"
-          dataKey="date"
-          name="Date"
-          tickFormatter={dateFormatter}
-          domain={["dataMin", "dataMax"]}
-        />
-        <YAxis />
-        <Tooltip content={CustomTooltip} />
-        {series.map(({ id, color }) => (
-          <Bar key={id} dataKey={id} fill={color} stackId="a" />
-        ))}
-      </BarChart>
-    </ResponsiveContainer>
+    <WithLoaderOverlay isLoading={isFetching}>
+      <ResponsiveContainer>
+        <BarChart data={data}>
+          <CartesianGrid />
+          <XAxis
+            type="number"
+            dataKey="date"
+            name="Date"
+            tickFormatter={dateFormatter}
+            domain={["dataMin", "dataMax"]}
+          />
+          <YAxis />
+          <Tooltip content={CustomTooltip} />
+          {series.map(({ id, color }) => (
+            <Bar key={id} dataKey={id} fill={color} stackId="a" />
+          ))}
+        </BarChart>
+      </ResponsiveContainer>
+    </WithLoaderOverlay>
   );
 };

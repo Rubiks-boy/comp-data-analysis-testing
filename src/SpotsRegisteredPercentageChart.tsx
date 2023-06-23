@@ -15,6 +15,7 @@ import { SERIES } from "./constants";
 import { dateFormatter } from "./utils";
 import type { BucketedComps, CompetitionFilter, DataSeries } from "./types";
 import { useFetchWcifs } from "./fetchingHooks/useFetchWcifs";
+import { WithLoaderOverlay } from "./WithLoaderOverlay";
 
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
@@ -98,7 +99,10 @@ export const SpotsRegisteredPercentageChart = () => {
     .flatMap(({ compFilter }) => pnwComps.filter(compFilter))
     .map(({ id }) => id);
 
-  const { wcifs } = useFetchWcifs(compIds, !isFetchingPNWComps);
+  const { isFetching: isFetchingWcifs, wcifs } = useFetchWcifs(
+    compIds,
+    !isFetchingPNWComps
+  );
 
   const bucketedComps = createBucketedComps(bucket, pnwComps);
 
@@ -109,30 +113,32 @@ export const SpotsRegisteredPercentageChart = () => {
   }));
 
   return (
-    <ResponsiveContainer>
-      <ScatterChart>
-        <CartesianGrid />
-        <XAxis
-          type="number"
-          dataKey="date"
-          name="Date"
-          tickFormatter={dateFormatter}
-          domain={["dataMin", "dataMax"]}
-        />
-        <YAxis
-          type="number"
-          unit={"%"}
-          dataKey="percentRegistered"
-          name="Spots registered"
-          domain={["dataMin", 100]}
-          tickFormatter={(value: number) => `${Math.round(value)}`}
-        />
-        <ZAxis type="category" dataKey="compNames" name="Competition" />
-        <Tooltip content={CustomTooltip} />
-        {datasets.map(({ label, data, color }) => (
-          <Scatter key={label} name={label} data={data} fill={color} line />
-        ))}
-      </ScatterChart>
-    </ResponsiveContainer>
+    <WithLoaderOverlay isLoading={isFetchingPNWComps || isFetchingWcifs}>
+      <ResponsiveContainer>
+        <ScatterChart>
+          <CartesianGrid />
+          <XAxis
+            type="number"
+            dataKey="date"
+            name="Date"
+            tickFormatter={dateFormatter}
+            domain={["dataMin", "dataMax"]}
+          />
+          <YAxis
+            type="number"
+            unit={"%"}
+            dataKey="percentRegistered"
+            name="Spots registered"
+            domain={["dataMin", 100]}
+            tickFormatter={(value: number) => `${Math.round(value)}`}
+          />
+          <ZAxis type="category" dataKey="compNames" name="Competition" />
+          <Tooltip content={CustomTooltip} />
+          {datasets.map(({ label, data, color }) => (
+            <Scatter key={label} name={label} data={data} fill={color} line />
+          ))}
+        </ScatterChart>
+      </ResponsiveContainer>
+    </WithLoaderOverlay>
   );
 };

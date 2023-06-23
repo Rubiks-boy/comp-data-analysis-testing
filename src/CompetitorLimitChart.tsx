@@ -13,6 +13,7 @@ import { useBucket, useRegions } from "./pickers/hooks";
 import { createBucketedComps } from "./utils/bucketComps";
 import { SERIES } from "./constants";
 import { dateFormatter } from "./utils";
+import { WithLoaderOverlay } from "./WithLoaderOverlay";
 import type { BucketedComps, CompetitionFilter } from "./types";
 
 const CustomTooltip = ({ active, payload }: any) => {
@@ -51,7 +52,7 @@ const transformDataForASeries = (
 };
 
 export const CompetitorLimitChart = () => {
-  const { comps: pnwComps } = useFetchPNWComps();
+  const { isFetching, comps: pnwComps } = useFetchPNWComps();
   const regions = useRegions();
   const bucket = useBucket();
 
@@ -66,23 +67,25 @@ export const CompetitorLimitChart = () => {
   }));
 
   return (
-    <ResponsiveContainer>
-      <ScatterChart>
-        <CartesianGrid />
-        <XAxis
-          type="number"
-          dataKey="date"
-          name="Date"
-          tickFormatter={dateFormatter}
-          domain={["dataMin", "dataMax"]}
-        />
-        <YAxis type="number" dataKey="totalLimit" name="Competitor Limit" />
-        <ZAxis type="category" dataKey="compNames" name="Competition" />
-        <Tooltip content={CustomTooltip} />
-        {datasets.map(({ label, data, color }) => (
-          <Scatter key={label} name={label} data={data} fill={color} line />
-        ))}
-      </ScatterChart>
-    </ResponsiveContainer>
+    <WithLoaderOverlay isLoading={isFetching}>
+      <ResponsiveContainer>
+        <ScatterChart>
+          <CartesianGrid />
+          <XAxis
+            type="number"
+            dataKey="date"
+            name="Date"
+            tickFormatter={dateFormatter}
+            domain={["dataMin", "dataMax"]}
+          />
+          <YAxis type="number" dataKey="totalLimit" name="Competitor Limit" />
+          <ZAxis type="category" dataKey="compNames" name="Competition" />
+          <Tooltip content={CustomTooltip} />
+          {datasets.map(({ label, data, color }) => (
+            <Scatter key={label} name={label} data={data} fill={color} line />
+          ))}
+        </ScatterChart>
+      </ResponsiveContainer>
+    </WithLoaderOverlay>
   );
 };
