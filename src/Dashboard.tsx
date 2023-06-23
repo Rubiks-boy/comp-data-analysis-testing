@@ -8,14 +8,25 @@ import { SpanPicker } from "./pickers/SpanPicker";
 import { NumberOfCompsChart } from "./NumberOfCompsChart";
 import { RegisteredCompetitorsChart } from "./RegisteredCompetitorsChart";
 import { SpotsRegisteredPercentageChart } from "./SpotsRegisteredPercentageChart";
+import { EventCoverageChart } from "./EventCoverageChart";
 
-const ChartBox = ({ children }: { children: ReactNode }) => {
+const ChartBox = ({
+  children,
+  xs = 12,
+  lg = 6,
+  height = 400,
+}: {
+  children: ReactNode;
+  xs?: number;
+  lg?: number;
+  height?: number;
+}) => {
   return (
-    <Grid item xs={12} lg={6}>
+    <Grid item xs={xs} lg={lg}>
       <Paper
         sx={{
           p: 2,
-          height: 400,
+          height,
         }}
       >
         {children}
@@ -69,6 +80,9 @@ export const Dashboard = () => {
               </ChartBox>
               <ChartBox>
                 <SpotsRegisteredPercentageChart />
+              </ChartBox>
+              <ChartBox lg={12} height={900}>
+                <EventCoverageChart />
               </ChartBox>
             </Grid>
           </Container>

@@ -27,3 +27,23 @@ export const SERIES: { [key: string]: DataSeries } = {
     color: "rgb(40, 40, 40)",
   },
 };
+
+export const EVENT_IDS: Array<string> = [
+  "333",
+  "222",
+  "pyram",
+  "skewb",
+  "sq1",
+  "333bf",
+  "333oh",
+  "444",
+  "555",
+  "666",
+  "777",
+  "minx",
+  "clock",
+  // "333fm",
+  // "444bf",
+  // "555bf",
+  // "333mbf",
+];
