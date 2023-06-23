@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import { CompetitorLimitChart } from "./CompetitorLimitChart";
 import { Box, Container, Grid, Paper, Toolbar } from "@mui/material";
 import { Header } from "./Header";
@@ -9,32 +8,8 @@ import { NumberOfCompsChart } from "./NumberOfCompsChart";
 import { RegisteredCompetitorsChart } from "./RegisteredCompetitorsChart";
 import { SpotsRegisteredPercentageChart } from "./SpotsRegisteredPercentageChart";
 import { EventCoverageChart } from "./EventCoverageChart";
-import { EventPopularityTable } from "./EventPopularityTable";
-
-const ChartBox = ({
-  children,
-  xs = 12,
-  lg = 6,
-  height = 400,
-}: {
-  children: ReactNode;
-  xs?: number;
-  lg?: number;
-  height?: number | null;
-}) => {
-  return (
-    <Grid item xs={xs} lg={lg}>
-      <Paper
-        sx={{
-          p: 2,
-          height,
-        }}
-      >
-        {children}
-      </Paper>
-    </Grid>
-  );
-};
+import { EventPopularityTables } from "./EventPopularityTables";
+import { ChartBox } from "./ChartBox";
 
 export const Dashboard = () => {
   console.log("render", new Date().getMilliseconds());
@@ -85,9 +60,7 @@ export const Dashboard = () => {
               <ChartBox lg={12} height={900}>
                 <EventCoverageChart />
               </ChartBox>
-              <ChartBox lg={9} height={null}>
-                <EventPopularityTable />
-              </ChartBox>
+              <EventPopularityTables />
             </Grid>
           </Container>
         </Box>

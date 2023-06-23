@@ -7,18 +7,17 @@ import {
   TableRow,
 } from "@mui/material";
 import { useFetchPNWComps } from "./fetchingHooks/useFetchPNWComps";
-import { useRegions } from "./pickers/hooks";
 import { EVENT_IDS, HISTORICAL_PNW_REGISTRATION, SERIES } from "./constants";
 import { WithLoaderOverlay } from "./WithLoaderOverlay";
 import { WithChartTitle } from "./WithChartTitle";
 import { useFetchWcifs } from "./fetchingHooks/useFetchWcifs";
+import type { Region } from "./types";
 
-export const EventPopularityTable = () => {
+export const EventPopularityTable = ({ region }: { region: Region }) => {
   const { isFetching: isFetchingPNWComps, comps: pnwComps } =
     useFetchPNWComps();
-  const regions = useRegions();
 
-  const series = regions.map((region) => SERIES[region]);
+  const series = [SERIES[region]];
 
   const comps = series.flatMap(({ compFilter }) => pnwComps.filter(compFilter));
 
@@ -77,7 +76,7 @@ export const EventPopularityTable = () => {
 
   return (
     <WithLoaderOverlay isLoading={isFetchingWcifs || isFetchingPNWComps}>
-      <WithChartTitle title="Event popularity">
+      <WithChartTitle title={`Event popularity (${region.toUpperCase()})`}>
         <TableContainer>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
